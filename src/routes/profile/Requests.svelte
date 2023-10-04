@@ -4,7 +4,6 @@
 	import { redirect } from '@sveltejs/kit'
     import { goto } from '$app/navigation';
 
-	// sending request: sender: admin name, me: v's payment, you: my payment
 	let rqs = [];
 
 	const getrqs = async () => {

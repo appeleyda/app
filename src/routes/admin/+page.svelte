@@ -32,7 +32,7 @@
 		}
 	}
 
-	const confirm = (i) => {
+	const confirm = async (i) => {
 		i.you.confirm = !i.you.confirm;
 
 		const {error} = await $supabase.from('trades').update({youconfirm: i.you.confirm}).eq('id', i.id);
@@ -45,7 +45,7 @@
 	onMount(() => {setInterval(update, 1000) });
 </script>
 
-{ #if $self.username != 'admin' && $self.number != 1000 }
+{ #if $self?.number != 1000 }
 	<div>
 		<h1>Admin panel</h1>
 		{ #each outgoing as i }

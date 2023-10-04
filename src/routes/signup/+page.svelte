@@ -3,12 +3,14 @@
 	import { self, supabase } from '$lib/stores'
     import { slide } from "svelte/transition";
 
+let busy = false;
 	let err;
 
 	let username = '';
 	let email, password, password2;
 
 	const signup = async () => {
+		busy = true;
 		if (password != password2) {
 			return;
 		}
@@ -37,7 +39,7 @@
 			console.error(error2); 
 			err = error2;return
 		}
-		const { data, error } = await $supabase.from('users').select().eq('password', password)
+		const { data, error } = await $supabase.from('users').select().eq('email', email).eq('password', password)
 		if (error) { console.error(error);
 		}
 		err = error;
@@ -46,6 +48,7 @@
 		$self.email = undefined;
 		$self.password = undefined;
 
+busy = false;
 		await goto('/profile');
 	}
 
@@ -69,7 +72,7 @@
 	<input type="password" bind:value={password2}>
 	<h3>Username</h3>
 	<input type="text" bind:value={username}>
-	<button style="margin: 1em;" on:click={signup}>Sign up</button>
+	<button style="margin: 1em;" on:click={() => {if ( !busy) signup();}}>Sign up</button>
 	<a href="/login">Log in</a>
 </div>
 
