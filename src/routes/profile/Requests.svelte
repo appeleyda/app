@@ -53,12 +53,14 @@
 		return new Promise(resolve => setTimeout(resolve, 500))
 	}
 
-	onMount(() => {setInterval(getrqs, 5000);});
+	onMount(() => {setInterval(getrqs, 1000);});
 
 	const click = async (i, j) => {
 		let t = await timer(); // await gettrade()
 
+		console.log('ASdD:', rqs)
 		$trade = rqs[j]
+		console.log('ASDF:', $trade)
 	await goto('/trade');
 	}
 

@@ -10,7 +10,40 @@
 		if (error) {
 			console.error(error)
 		}
-		outgoing = data;
+		outgoing = [];
+		for (let i = 0; i < data.length; i++) {
+			let t = {
+				id: data[i].id,
+				me: {
+					user: {
+						username: data[i].meuserusername,
+						number: data[i].meusernumber,
+						created: data[i].meusercreated,
+						trades: data[i].meusertrades,
+						rating: data[i].meuserrating
+					},
+					trading: data[i].metrading,
+					value: data[i].mevalue,
+					confirm: data[i].meconfirm,
+				},
+				you: {
+					user: {
+						username: data[i].youuserusername,
+						number: data[i].youusernumber,
+						created: data[i].youusercreated,
+						trades: data[i].youusertrades,
+						rating: data[i].youuserrating
+					},
+					trading: data[i].youtrading,
+					value: data[i].youvalue,
+					confirm: data[i].youconfirm
+				},
+				deposited: data[i].deposited,
+				verified: data[i].verified,
+			}
+			outgoing.push(t);
+		}
+		outgoing = outgoing;
 	}
 
 	async function verify(i) {
@@ -42,18 +75,27 @@
 		}
 	}
 
+	const del = async (i) => {
+		const {error} = await $supabase.from('trades').delete().eq('id', i.id)
+		if (error) {
+			console.error(error);
+		}
+	}
+
 	onMount(() => {setInterval(update, 1000) });
 </script>
 
-{ #if $self?.number != 1000 }
+{ #if $self?.number == 1000 }
 	<div>
 		<h1>Admin panel</h1>
 		{ #each outgoing as i }
 		<div style="border: 2px solid var(--color-theme-1);">
 			<h3>Trade with {i.me.user.username}#{i.me.user.number}:</h3>
 			<button on:click={() => verify(i)}>Verify account</button>
+			<input type="text" placeholder="deposit amount" bind:value={depositvalue}>
 			<button on:click={() => deposit(i)}>Verify deposit</button>
 			<button on:click={() => confirm(i)}>confirm deposit</button>
+			<button on:click={() => del(i)}>delete trade</button>
 		<h1>Confirmed?: {i.you.confirm}</h1>
 		</div>
 		{ /each }

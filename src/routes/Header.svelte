@@ -3,6 +3,11 @@
 	import { self } from '$lib/stores';
 	import profile from '$lib/images/profile.svg';
 	import github from '$lib/images/github.svg';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (localStorage.self) $self = JSON.parse(localStorage.self);
+	})
 </script>
 
 <header>

@@ -1,5 +1,6 @@
 <script>
 	import { self, trade, supabase } from '$lib/stores';
+    import { goto } from "$app/navigation";
     import { onMount } from 'svelte';
   import Null from '../Null.svelte';
 	import copy from '$lib/images/copy.svg'
@@ -8,22 +9,45 @@
 	let me = $self.username;
 	let you = $trade.you.user.username;
 
-	$: confMe = $trade.me.confirm;
-	$: confYou = $trade.you.confirm
+	$: confMe = $trade?.me?.confirm;
+	$: confYou = $trade?.you?.confirm
 
 	async function gettrade() {
 		const { data, error } = await $supabase.from('trades').select().eq('id', $trade.id)
 		let t = data[0]
-		$trade.you = t.you;
+		let u = {
+			user: {
+			username: t.youuserusername,
+			number: t.youusernumber,
+			created: t.youusercreated,
+			trades: t.youusertrades,
+			rating: t.youuserrating
+			},
+			trading: t.youtrading,
+			value: t.youvalue,
+			confirm: t.youconfirm
+		}
+		$trade.you = u;
 		$trade.deposited = t.deposited
 		$trade.verified = t.verified
 	}
 
+	$: if ($trade.me.confirm == true && $trade.you.confirm == true) {
+		goto('/trade/done')
+	}
+
+	let caddress = 'Loading address...'
+
 	const confirmtrade = () =>{
 		if (confMe == 0) {
+			confMe = true;
 			$trade.me.confirm = true;
+			$trade.me = $trade.me;
+
 		} else {
+			confMe = false;
 			$trade.me.confirm = false;
+			$trade.me = $trade.me;
 		}
 	}
 
@@ -37,8 +61,21 @@
 
 	$: $trade.me, settrade();
 
-	onMount(() => {
-		setInterval(gettrade, 2000)});
+	const setaddress = async () => {
+		const { data, error } = await $supabase.from('address').select()
+	
+		if (error) {
+			console.error(error);
+		}
+		
+		data.sort((a, b) => a.inserted_at - b.inserted_at);
+
+		caddress = data[data.length - 1].address;
+	}
+
+	onMount(async () => {
+		setInterval(gettrade, 1000)
+		await setaddress()});
 </script>
 
 <svelte:head>
@@ -50,18 +87,18 @@
 	{ #if me }
 		<div class="info">
 			<h1>You're currently trading with <a href="/trade/info/{you}"><span style="color: var(--color-theme-1);">@{you}</span></a>:</h1>
-			<h3>Your <span style="color: var(--color-theme-1);">{$trade.me.trading}</span> for their <span style="color: var(--color-theme-1);">{$trade.you.trading}</span>.</h3>
+			<h3>Your <span style="color: var(--color-theme-1);">{$trade?.me?.trading}</span> for their <span style="color: var(--color-theme-1);">{$trade.you.trading}</span>.</h3>
 			<h3>Be sure to read our <a href="/safety">important information and tips</a> before trading</h3>
 		</div>
 		<div class="trade">
-			{ #if $trade.me.trading != 'account' }
+			{ #if $trade?.me?.trading != 'account' }
 			<div class="me">
 				<h1><span>@{$self.username}</span></h1>
-				<h2><span style="color: {confMe ? 'lightgreen' : 'red'};">{confMe ? 'Confirmed' : 'Unconfirmed'}</span></h2>
+				<h2><span style="color: {confMe ? 'lightgreen' : 'red'};">asdf {confMe ? 'Confirmed' : 'Unconfirmed'}</span></h2>
 				<h3>This trade is for <span style="color: var(--color-theme-1);">{$trade.me.trading}</span>.</h3>
 				<h3>Copy this address to deposit into escrow:</h3>
 				<div class="sideways">
-					<div class="address"><p>addresdndfsjjakjshdfjkhaskhdfs</p></div>
+					<div class="address"><p>{caddress}</p></div>
 					<button class="copy" on:click={() => copy}>
 						<img class="icon" src={copy} alt="Copy" />
 					</button>
