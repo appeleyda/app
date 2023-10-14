@@ -1,5 +1,5 @@
 <script>
-	import { trade, supabase } from '$lib/stores'
+	import { self, trade, supabase } from '$lib/stores'
   import { onMount } from "svelte";
 	import { redirect } from '@sveltejs/kit'
     import { goto } from '$app/navigation';
@@ -7,7 +7,7 @@
 	let rqs = [];
 
 	const getrqs = async () => {
-		const { data, error } = await $supabase.from('trades').select()
+		const { data, error } = await $supabase.from('trades').select().eq('meuserusername', $self.username)
 		if (error ) {
 			console.error(error);
 			return

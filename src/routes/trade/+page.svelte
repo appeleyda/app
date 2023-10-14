@@ -13,7 +13,12 @@
 	$: confYou = $trade?.you?.confirm
 
 	async function gettrade() {
-		const { data, error } = await $supabase.from('trades').select().eq('id', $trade.id)
+		const { data, error } = await $supabase.from('trades').select().eq('id', $trade.id);
+		if (error) {
+			console.error(error);
+			await goto('/profile');
+		}
+		if (data.length == 0) $trade = {};
 		let t = data[0]
 		let u = {
 			user: {
@@ -94,7 +99,7 @@
 			{ #if $trade?.me?.trading != 'account' }
 			<div class="me">
 				<h1><span>@{$self.username}</span></h1>
-				<h2><span style="color: {confMe ? 'lightgreen' : 'red'};">asdf {confMe ? 'Confirmed' : 'Unconfirmed'}</span></h2>
+				<h2><span style="color: {confMe ? 'lightgreen' : 'red'};">{confMe ? 'Confirmed' : 'Unconfirmed'}</span></h2>
 				<h3>This trade is for <span style="color: var(--color-theme-1);">{$trade.me.trading}</span>.</h3>
 				<h3>Copy this address to deposit into escrow:</h3>
 				<div class="sideways">
@@ -117,7 +122,7 @@
 					<h1><span>@{$trade.you.user.username}</span></h1>
 					<h2><span style="color: {confYou ? 'lightgreen' : 'red'};">{confYou ? 'Confirmed' : 'Unconfirmed'}</span></h2>
 					{ #if $trade.verified }
-					<p>Microsoft account linked to <span style="color: var(--color-theme-1);">rg4tv</span> has been verified and locked @{$trade.you.user.username} no longer has access to the account.</p>
+					<p>Microsoft account linked to <span style="color: var(--color-theme-1);">rg4tv</span> has been verified and locked. <span style="color: var(--color-theme-1);">@{$trade.you.user.username}</span> no longer has access to the account.</p>
 				{ :else }
 				<div class="sideways">
 					<img class="load" src={loading} alt="" />
@@ -177,7 +182,7 @@
 	}
 
 	.address {
-		width: 150px;
+		width: 200px;
 		text-align: left;
 		overflow-x: scroll;
 	}

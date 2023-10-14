@@ -13,6 +13,7 @@
 		<li>Make sure you've verified the information</li>
 		<li>Check accounts' feedback score</li>
 		<li>Try to use verified instances when possible</li>
+		<li>If supported, check that the account is locked before confirming a trade</li>
 	</ul>
 
 	<h3>Most importantly, when trading coins, be extremely careful to use the exact address and amount provided. Since TradeUp is decentralized, it's possible for your coins to be lost forever if you don't follow this rule.</h3>

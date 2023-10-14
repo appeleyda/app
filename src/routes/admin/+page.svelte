@@ -1,6 +1,9 @@
 <script>
 	import { self, supabase } from '$lib/stores';
     import { onMount } from 'svelte';
+	let confirmedloading = false;
+	let verifyaccountloading = false;
+	let verifydepositloading = false;
 
 		let outgoing = [];
 		let depositvalue = '';
@@ -47,31 +50,41 @@
 	}
 
 	async function verify(i) {
-		i.verified = true;
+		verifyaccountloading = true;
+		i.verified = !i.verified;
 
 		const {error} = await $supabase.from('trades').update({verified: true}).eq('id', i.id);
+		verifyaccountloading = false;
 		if(error) {
 		console.error(error);
+		i.verified  =!i.verified;
 		}
+		verifyaccountloading = false;
 	}
 
 	async function deposit(i) {
+		verifydepositloading = true;
 		i.deposited = parseFloat(depositvalue);
 
 		const {error} = await $supabase.from('trades').update({deposited: parseFloat(depositvalue)}).eq('id', i.id);
 
+		verifydepositloading = false;
 		if(error) {
 		console.error(error);
+		i.deposited = false;
 		}
 	}
 
 	const confirm = async (i) => {
+		confirmedloading = true;
 		i.you.confirm = !i.you.confirm;
 
 		const {error} = await $supabase.from('trades').update({youconfirm: i.you.confirm}).eq('id', i.id);
+		confirmedloading = false;
 
 		if(error) {
 		console.error(error);
+		i.you.confirm = !i.you.confirm;
 		}
 	}
 
@@ -82,7 +95,7 @@
 		}
 	}
 
-	onMount(() => {setInterval(update, 1000) });
+	onMount(() => {setInterval(update, 1000); });
 </script>
 
 { #if $self?.number == 1000 }
@@ -91,12 +104,16 @@
 		{ #each outgoing as i }
 		<div style="border: 2px solid var(--color-theme-1);">
 			<h3>Trade with {i.me.user.username}#{i.me.user.number}:</h3>
-			<button on:click={() => verify(i)}>Verify account</button>
+			<div class="action">
+			<button style="" on:click={() => !verifyaccountloading ? verify(i) : console.log('error')}>Verify account</button>
 			<input type="text" placeholder="deposit amount" bind:value={depositvalue}>
-			<button on:click={() => deposit(i)}>Verify deposit</button>
-			<button on:click={() => confirm(i)}>confirm deposit</button>
-			<button on:click={() => del(i)}>delete trade</button>
+			<button on:click={() => verifydepositloading ? console.log('error') : deposit(i)}>Verify deposit</button>
+			<button on:click={() => confirmedloading ? console.error('error') : confirm(i)}>confirm deposit</button>
+			<button style="background: red; border: 2px solid red;" on:click={() => del(i)}>delete trade</button>
+			</div>
 		<h1>Confirmed?: {i.you.confirm}</h1>
+		<h1>Account Verified?: {i.verified}</h1>
+		<h1>Deposit Verified?: {i.deposited}</h1>
 		</div>
 		{ /each }
 	</div>
@@ -105,3 +122,19 @@
 		<h1>You aren't authorized to access this page.</h1>
 	</main>
 { /if }
+
+<style>
+	.action {
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+	}
+	input {
+		padding: 20px;
+		background: none;
+		border: 3px solid var(--color-theme-1);
+		font-size: 20px;
+		color: var(--text-color-0);
+		border-radius: 8px;
+	}
+</style>
