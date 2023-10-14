@@ -16,6 +16,7 @@
 			go = 1
 			$trade = JSON.parse(localStorage.trade);
 		}
+		console.log('going')
 		if (go == 1) await goto('/profile')
 	})
 
