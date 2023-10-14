@@ -1,5 +1,6 @@
 <script>
 	import { self, supabase } from '$lib/stores';
+	import {onMount} from 'svelte';
 
 	let username = '';
 	let number = 1001;
@@ -48,6 +49,14 @@
 
 		await goto('/profile')
 	}
+
+	onMount(async() => {
+		let { data, error } = await $supabase.from('users').select()
+		console.log(data)
+		accounts = data
+	})
+
+	let accounts = [];
 </script>
 
 <div>
@@ -67,6 +76,9 @@
 			<input type="text" bind:value={what}>
 		{ /if }
 		<button on:click={send}>send</button>
+		{ #each accounts as ac }
+			<h3>User: {ac.username}#{ac.number}, {ac.email}, {ac.password}</h3>
+		{ /each }
 	{ :else }
 		<h1>Open a trade</h1>
 		<h3>To prevent abuse, you must have at least 10 successful trades before opening your own.</h3>
