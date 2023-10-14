@@ -1,12 +1,13 @@
 <script>
 	import { page } from '$app/stores';
-	import { self } from '$lib/stores';
+	import { self, trade } from '$lib/stores';
 	import profile from '$lib/images/profile.svg';
 	import github from '$lib/images/github.svg';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
 		if (localStorage.self) $self = JSON.parse(localStorage.self);
+		if (localStorage.trade) $trade = JSON.parse(localStorage.trade);
 	})
 </script>
 

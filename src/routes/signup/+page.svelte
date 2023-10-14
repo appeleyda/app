@@ -48,7 +48,6 @@ let busy = false;
 		$self.email = undefined;
 		$self.password = undefined;
 
-busy = false;
 		await goto('/profile');
 	}
 

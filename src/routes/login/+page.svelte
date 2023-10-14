@@ -7,10 +7,16 @@
 	let err, email, password;
 
 	onMount(async () => {
+		let go = 0;
 		if (localStorage.self) {
+			go = 1
 			$self = JSON.parse(localStorage.self);
-			await goto('/profile')
 		}
+		if (localStorage.trade) {
+			go = 1
+			$trade = JSON.parse(localStorage.trade);
+		}
+		if (go == 1) await goto('/profile')
 	})
 
 	let loading = false;

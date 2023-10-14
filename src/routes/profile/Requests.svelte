@@ -60,7 +60,8 @@
 
 		console.log('ASdD:', rqs)
 		$trade = rqs[j]
-		console.log('ASDF:', $trade)
+
+		localStorage.trade = JSON.stringify($trade);
 	await goto('/trade');
 	}
 
