@@ -1,5 +1,5 @@
 <script>
-	import { self, supabase } from '$lib/stores'
+	import { self, trade, supabase } from '$lib/stores'
     import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
