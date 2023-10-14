@@ -14,7 +14,7 @@
 		<div>
 			<h1>Your profile</h1>
 			<h1><span style="color: var(--color-theme-1);">{me}</span>#{$self.number}</h1>
-			<h3>Account created on {$self.created.toLocaleString()}</h3>
+			<h3>Account created on {new Date($self.created).toLocaleString()}</h3>
 			<h3>Successful trades: {$self.trades}</h3>
 			<h3>Rating: {$self.rating}%</h3>
 			<Requests />

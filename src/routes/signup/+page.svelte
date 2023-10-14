@@ -72,7 +72,7 @@ busy = false;
 	<input type="password" bind:value={password2}>
 	<h3>Username</h3>
 	<input type="text" bind:value={username}>
-	<button style="margin: 1em;" on:click={() => {if ( !busy) signup();}}>Sign up</button>
+	<button disabled="{busy}" style="margin: 1em;" on:click={() => {signup();}}>Sign up</button>
 	<a href="/login">Log in</a>
 </div>
 

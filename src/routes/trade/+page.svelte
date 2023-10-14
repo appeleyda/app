@@ -5,7 +5,6 @@
   import Null from '../Null.svelte';
 	import copy from '$lib/images/copy.svg'
 	import loading from '$lib/images/loading.svg'
-
 	let me = $self.username;
 	let you = $trade.you.user.username;
 
@@ -147,7 +146,7 @@
 		<Null />
 	{ /if }
 	</div>
-	<button style="width: 140px; position: absolute; bottom: 2rem; margin-left: auto; margin-right: auto; right: 0; left: 0; cursor:{$trade.deposited == $trade.me.trading.split(' ')[0] ? "pointer" : "not-allowed"}"on:click={() => {if ($trade.deposited == $trade.me.trading.split(' ')[0]) confirmtrade();}}>{confMe == 0 ? 'Confirm' : 'Unconfirm'}</button>
+	<button disabled='{!$trade.deposited}' style="width: 140px; position: absolute; bottom: 2rem; margin-left: auto; margin-right: auto; right: 0; left: 0;"on:click={() => {confirmtrade();}}>{confMe == 0 ? 'Confirm' : 'Unconfirm'}</button>
 
 <style>
 	.everything {

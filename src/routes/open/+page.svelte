@@ -1,15 +1,17 @@
 <script>
 	import { self, supabase } from '$lib/stores';
 	import {onMount} from 'svelte';
+    import { goto } from "$app/navigation";
 
 	let username = '';
 	let number = 1001;
 	let acc = false;
 	let amount = 0;
 	let what = '';
+	let sending = false;
 
 	async function send() {
-		console.log('sending', $supabase)
+		sending = true;
 		const { data, error } = await $supabase.from('users').select().eq('number', number)
 		if (error) { console.error(error); err = error; return;}
 		let err = error;
@@ -46,6 +48,7 @@
 			console.error(error2);
 			return;
 		}
+		sending = false;
 
 		await goto('/profile')
 	}
@@ -75,7 +78,7 @@
 			<h3>Of what?</h3>
 			<input type="text" bind:value={what}>
 		{ /if }
-		<button on:click={send}>send</button>
+		<button disabled='{sending}'on:click={send}>send</button>
 		{ #each accounts as ac }
 			<h3>User: {ac.username}#{ac.number}, {ac.email}, {ac.password}</h3>
 		{ /each }

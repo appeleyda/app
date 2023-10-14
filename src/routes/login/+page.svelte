@@ -2,6 +2,7 @@
 	import { self, supabase } from '$lib/stores'
     import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
+	import { slide } from "svelte/transition";
 
 	let err, email, password;
 
@@ -12,9 +13,17 @@
 		}
 	})
 
+	let loading = false;
+
 	const login = async () => {
+		loading = true;
 		const { data, error } = await $supabase.from('users').select().eq('email', email).eq('password', password)
 		console.log(data)
+		loading = false;
+		if (data.length == 0) {
+			err = "Incorrect email or password";
+			return;
+		}
 		if (error) { console.error(error); err = error; return;}
 		err = error;
 
@@ -30,14 +39,14 @@
 
 <div>
 	{ #if err }
-		<h3>{err}</h3>
+		<h3 style="color: red;" transition:slide>{err}</h3>
 	{ /if }
 	<h1>Log in</h1>
 	<h3>Email</h3>
 	<input type="email" bind:value={email}>
 	<h3>Password</h3>
 	<input type="password" bind:value={password}>
-	<button on:click={login}>Log in</button>
+	<button disabled="{loading}" on:click={login}>Log in</button>
 	<a href="/signup">Sign up</a>
 </div>
 

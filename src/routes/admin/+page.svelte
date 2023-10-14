@@ -14,6 +14,7 @@
 			console.error(error)
 		}
 		outgoing = [];
+		console.log({ data })
 		for (let i = 0; i < data.length; i++) {
 			let t = {
 				id: data[i].id,
@@ -53,7 +54,7 @@
 		verifyaccountloading = true;
 		i.verified = !i.verified;
 
-		const {error} = await $supabase.from('trades').update({verified: true}).eq('id', i.id);
+		const {error} = await $supabase.from('trades').update({verified: i.verified}).eq('id', i.id);
 		verifyaccountloading = false;
 		if(error) {
 		console.error(error);
@@ -105,10 +106,10 @@
 		<div style="border: 2px solid var(--color-theme-1);">
 			<h3>Trade with {i.me.user.username}#{i.me.user.number}:</h3>
 			<div class="action">
-			<button style="" on:click={() => !verifyaccountloading ? verify(i) : console.log('error')}>Verify account</button>
+			<button disabled='{verifyaccountloading}' style="" on:click={() => verify(i)}>Verify account</button>
 			<input type="text" placeholder="deposit amount" bind:value={depositvalue}>
-			<button on:click={() => verifydepositloading ? console.log('error') : deposit(i)}>Verify deposit</button>
-			<button on:click={() => confirmedloading ? console.error('error') : confirm(i)}>confirm deposit</button>
+			<button disabled='{verifydepositloading}' on:click={() => deposit(i)}>Verify deposit</button>
+			<button style="border: 3px solid lightgreen;"disabled='{confirmedloading || (!i.verified && i.you.confirm == false)}' on:click={() => confirm(i)}>CONFIRM TRADE</button>
 			<button style="background: red; border: 2px solid red;" on:click={() => del(i)}>delete trade</button>
 			</div>
 		<h1>Confirmed?: {i.you.confirm}</h1>
