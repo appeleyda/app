@@ -117,7 +117,7 @@
 					<h1><span>@{$trade.you.user.username}</span></h1>
 					<h2><span style="color: {confYou ? 'lightgreen' : 'red'};">{confYou ? 'Confirmed' : 'Unconfirmed'}</span></h2>
 					{ #if $trade.verified }
-					<p>Microsoft account has been verified.</p>
+					<p>Microsoft account linked to <span style="color: var(--color-theme-1);">rg4tv</span> has been verified and locked @{$trade.you.user.username} no longer has access to the account.</p>
 				{ :else }
 				<div class="sideways">
 					<img class="load" src={loading} alt="" />

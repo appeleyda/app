@@ -14,6 +14,7 @@
 
 	const login = async () => {
 		const { data, error } = await $supabase.from('users').select().eq('email', email).eq('password', password)
+		console.log(data)
 		if (error) { console.error(error); err = error; return;}
 		err = error;
 
